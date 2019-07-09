@@ -21,7 +21,7 @@ var deleteDuplicates = function(head) {
   p2 = p1.next
   if (p1.val === p2.val) {
     headless = true
-    if (!p2.next) { return p2.next }
+    if (!p2.next) { return null }
   }
 
   while (!!p2.next) {
@@ -33,7 +33,7 @@ var deleteDuplicates = function(head) {
     
     p2 = p2.next
     if (!p2.next) { 
-      p1.next = p2.next
+      p1.next = null
       break
     }
     if (p1.next.val !== p2.next.val) {
