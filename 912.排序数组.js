@@ -10,80 +10,45 @@
  * @return {number[]}
  */
 var sortArray = function(nums) {
-  const len = nums.length;
-
-  const swap = (a, b, log) => {
+  const swap = (a, b) => {
     const temp = nums[a]
     nums[a] = nums[b]
     nums[b] = temp
   }
 
-  const sort = (pivotIndex, headIndex, tailIndex) => {
-    if (pivotIndex === headIndex && headIndex === tailIndex) {
-      return;
-    }
-    if (
-      Math.min(pivotIndex, headIndex, tailIndex) < 0
-      || Math.max(pivotIndex, headIndex, tailIndex) > len - 1
-    ) {
-      return;
-    }
+  const partition = (A, lo, hi) => {
+    const pivot = A[Math.floor((hi + lo) / 2)]
 
+    let i = lo - 1
+    let j = hi + 1
 
-    const INITIAL_PIVOT_INDEX = pivotIndex;
-    const INITIAL_HEAD_INDEX = headIndex;
-    const INITIAL_TAIL_INDEX = tailIndex;
+    while (true) {
 
-    headPointer:
-    for (; headIndex <= INITIAL_PIVOT_INDEX; headIndex ++) {
-      if (headIndex === INITIAL_PIVOT_INDEX) {
-        if (INITIAL_TAIL_INDEX - 1 >= INITIAL_HEAD_INDEX) {
-          sort(INITIAL_TAIL_INDEX, INITIAL_HEAD_INDEX, INITIAL_TAIL_INDEX - 1);
-        }
-        break headPointer;
+      do { ++ i } while (A[i] < pivot)
+      do { -- j } while (A[j] > pivot)
+
+      if (i >= j) {
+        return j
       }
-
-      if (nums[headIndex] < nums[INITIAL_PIVOT_INDEX]) {
-        continue headPointer;
-      }
-
-
-      tailPointer:
-      while (tailIndex >= INITIAL_HEAD_INDEX) {
-
-        if (headIndex > tailIndex) {
-          break tailPointer;
-        }
-
-        if (tailIndex === headIndex) {
-          swap(tailIndex, INITIAL_PIVOT_INDEX);
-          
-          const leftPivotIndex = Math.max(tailIndex - 1, INITIAL_HEAD_INDEX)
-          const leftTailIndex = Math.max(leftPivotIndex - 1, INITIAL_HEAD_INDEX)
-          sort(leftPivotIndex, INITIAL_HEAD_INDEX, leftTailIndex);
-
-          const rightPivotIndex = INITIAL_PIVOT_INDEX;
-          const rightHeadIndex = tailIndex + 1;
-          const rightTailIndex = Math.max(rightPivotIndex - 1, rightHeadIndex)
-          sort(rightPivotIndex, rightHeadIndex, rightTailIndex);
-          break headPointer;
-        }
-
-        if (nums[tailIndex] < nums[INITIAL_PIVOT_INDEX]) {
-          break tailPointer;
-        }
-
-        -- tailIndex;
-      }
-
-      swap(headIndex, tailIndex);
-      continue headPointer;
+      swap(i, j)
     }
+
   }
 
-  sort(len - 1, 0, len - 2);
+  const sort = (A, lo, hi) => {
+    if (lo === hi) return
+
+    const p = partition(A, lo, hi)
+    
+    sort(A, lo, p);
+    sort(A, p + 1, hi);
+  }
+
+  const len = nums.length;
+  sort(nums, 0, len - 1);
   return nums;
 };
+
 
 // @lc code=end
 
